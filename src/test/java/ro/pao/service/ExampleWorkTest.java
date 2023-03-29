@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * Aceste teste se cheama 'unitare' pentru ca se testeaza 'per unitate'
  */
-class ExampleServiceTest {
+class ExampleWorkTest {
 
     private final Menu menu = Menu.getInstance();
     private final ExampleService eggService = new ExampleServiceImpl();

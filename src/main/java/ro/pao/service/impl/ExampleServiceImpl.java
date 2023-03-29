@@ -63,7 +63,7 @@ public class ExampleServiceImpl implements ExampleService {
     }
 
     @Override
-    public void modificaElementById(UUID id, ExampleClass newElement) {
+    public void updateElementById(UUID id, ExampleClass newElement) {
         // sterg elementul dat si adaug altul
         removeElementById(id);
         addOnlyOne(newElement);

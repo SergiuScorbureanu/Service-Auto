@@ -32,5 +32,5 @@ public interface ExampleService {
 
     void removeElementById(UUID id);
 
-    void modificaElementById(UUID id, ExampleClass newElement);
+    void updateElementById(UUID id, ExampleClass newElement);
 }

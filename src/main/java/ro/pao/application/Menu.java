@@ -44,7 +44,7 @@ public class Menu {
                 ExampleClass.builder()
                         .id(UUID.randomUUID())
                         .creationDate(LocalDate.of(2023, 03, 22))
-                        .updateDate(LocalDate.now())
+                        .updateDate(LocalDate.now()) // aici vin restul de intrari
                         .build(),
                 ExampleClass.builder()
                         .id(UUID.randomUUID())
@@ -62,7 +62,7 @@ public class Menu {
 
         System.out.println("Dupa modificare: ");
         exampleClass.setUpdateDate(LocalDate.of(2, 2, 2));
-        exampleService.modificaElementById(exampleClass.getId(), exampleClass);
+        exampleService.updateElementById(exampleClass.getId(), exampleClass);
         exampleService.getAllFromList()
                 .forEach(elementFromList -> System.out.println(elementFromList));
 

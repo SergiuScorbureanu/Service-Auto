@@ -11,6 +11,6 @@ import java.util.ArrayList;
 public class Sector extends AbstractEntity {
 
     private ArrayList<Employee> employeesList;
-    private ArrayList<Service> servicesList;
+    private ArrayList<Work> servicesList;
 
 }

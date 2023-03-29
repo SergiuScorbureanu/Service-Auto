@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 @SuperBuilder
 @Getter
-public class Service extends AbstractEntity {
+public class Work extends AbstractEntity {
 
     private String name;
     private Integer duration;
