@@ -8,9 +8,11 @@ import java.util.UUID;
 
 public interface WorkService {
 
-    void createWork(Work work);
+    void addWork(Work work);
 
-    Optional<Work> getWorkById();
+    void addAllWorksFromList(List<Work> workList);
+
+    Optional<Work> getWorkById(UUID id);
 
     List<Work> getAllWorks();
 

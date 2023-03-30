@@ -8,11 +8,13 @@ import java.util.UUID;
 
 public interface PartService {
 
-    void createPart(Part part);
+    void addPart(Part part);
 
-    Optional<Part> getPartByName(String name);
+    void addAllParts(List<Part> partList);
 
-    List<Part> getAllParts();
+    Optional<Part> getPartByName(UUID id);
+
+    List<Part> getAllParts(UUID id);
 
     void deletePartById(UUID id);
 

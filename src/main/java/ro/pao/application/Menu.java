@@ -1,11 +1,10 @@
 package ro.pao.application;
 
 import ro.pao.model.*;
-import ro.pao.model.abstracts.AbstractEntity;
 import ro.pao.service.EmployeeService;
-import ro.pao.service.ExampleService;
+import ro.pao.service.WorkService;
 import ro.pao.service.impl.EmployeeServiceImpl;
-import ro.pao.service.impl.ExampleServiceImpl;
+import ro.pao.service.impl.WorkServiceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +22,7 @@ public class Menu {
 
    // private final ExampleService exampleService = new ExampleServiceImpl();
     private final EmployeeService employeeService = new EmployeeServiceImpl();
+    private final WorkService workService = new WorkServiceImpl();
 
     public static Menu getInstance() {
         return (INSTANCE == null ? new Menu() : INSTANCE);
@@ -72,6 +72,25 @@ public class Menu {
         System.out.println("Dupa update:");
         employeeService.getAllEmployees()
                 .forEach(employee -> System.out.println(employee.getId() + ", " + employee.getLastName()));
+
+
+        employeeService.deleteEmployeeById(e1.getId());
+
+        System.out.println("Dupa stergere:");
+        employeeService.getAllEmployees()
+                .forEach(employee -> System.out.println(employee.getId() + ", " + employee.getLastName()));
+
+        List<Work> works = List.of(
+                Work.builder()
+                        .id(UUID.randomUUID())
+                        .creationDate(LocalDate.now())
+                        .updateDate(LocalDate.now())
+                        .name("Revizie")
+                        .duration(2)
+                        .price(300.0)
+                        .build()
+        );
+        workService.addAllWorksFromList(works);
 
 
 //        EmployeeServiceImpl.getAllEmployeeNames();

@@ -8,11 +8,13 @@ import java.util.UUID;
 
 public interface SectorService {
 
-    void createSector(Sector sector);
+    void addSector(Sector sector);
 
-    Optional<Sector> getSectorById();
+    void addAllSectorsFromList(List<Sector> sectorsList);
 
-    List<Sector> getAllFromList();
+    Optional<Sector> getSectorById(UUID id);
+
+    List<Sector> getAllSectors();
 
     void deleteSectorById(UUID id);
 
