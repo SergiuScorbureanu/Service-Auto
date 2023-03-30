@@ -3,6 +3,7 @@ package ro.pao.service.impl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ro.pao.model.Employee;
+import ro.pao.model.User;
 import ro.pao.service.EmployeeService;
 
 import java.util.ArrayList;
@@ -25,14 +26,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void addAllEmployeesFromList(List<Employee> employeeList) {
-        employeeList.addAll(employeeList);
+        employeesList.addAll(employeeList);
     }
 
     @Override
     public Optional<Employee> getEmployeeById(UUID id) {
         return employeesList.stream()
-                .filter(object -> id.equals(object.getId()))
-                .findAny();
+                .filter(employee -> id.equals(employee.getId()))
+                .findFirst();
     }
 
     @Override
@@ -43,14 +44,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployeeById(UUID id) {
         employeesList = employeesList.stream()
-                .filter((object -> !id.equals((object.getId()))))
-                .collect((Collectors.toList()));
+                .filter(object -> !id.equals(object.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public void updateEmployeeById(UUID id, Employee newEmployee) {
-        deleteEmployeeById(id);
-        addEmployee(newEmployee);
-
+        Optional<Employee> employee = this.getEmployeeById(id);
+        if(employee.isPresent()) {
+            deleteEmployeeById(id);
+            newEmployee.setId(id);
+            addEmployee(newEmployee);
+        }
     }
+
+//    public static List<String> getAllEmployeeNames() {
+//        return employeesList.stream().map(User::getFirstName).collect(Collectors.toList());
+//    }
+
 }
