@@ -24,7 +24,7 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public void addAllParts(List<Part> partList) {
+    public void addAllPartsFromList(List<Part> partList) {
         partsList.addAll(partList);
     }
 

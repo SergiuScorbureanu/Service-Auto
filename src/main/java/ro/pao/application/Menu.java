@@ -33,7 +33,7 @@ public class Menu {
         List<Employee> employees = List.of(
                 Employee.builder()
                         .id(UUID.randomUUID())
-                        .creationDate(LocalDate.of(2023, 3, 22))
+                        .creationDate(LocalDate.of(2023, 3, 31))
                         .updateDate(LocalDate.now())
                         .firstName("Mircea")
                         .lastName("Popescu")
@@ -42,24 +42,33 @@ public class Menu {
                         .build(),
                 Employee.builder()
                         .id(UUID.randomUUID())
-                        .creationDate(LocalDate.of(2023, 3, 22))
+                        .creationDate(LocalDate.of(2023, 3, 31))
                         .updateDate(LocalDate.now())
                         .firstName("Jenel")
                         .lastName("Popa")
-                        .salary(5000.00)
+                        .salary(4500.00)
                         .position("Mecanic")
+                        .build(),
+                Employee.builder()
+                        .id(UUID.randomUUID())
+                        .creationDate(LocalDate.of(2023, 3, 31))
+                        .updateDate(LocalDate.now())
+                        .firstName("Viorel")
+                        .lastName("Talpan")
+                        .salary(7000.00)
+                        .position("Mecanic sef")
                         .build()
         );
         employeeService.addAllEmployeesFromList(employees);
 
-        System.out.println("Inainte de update:");
+        System.out.println("Employees inainte de update:");
         employeeService.getAllEmployees()
                 .forEach(employee -> System.out.println(employee.getId() + ", " + employee.getLastName()));
 
 
         Employee e1 = Employee.builder()
                 .id(UUID.randomUUID())
-                .creationDate(LocalDate.of(2023, 3, 22))
+                .creationDate(LocalDate.of(2023, 3, 31))
                 .updateDate(LocalDate.now())
                 .firstName("Mircea")
                 .lastName("Ionescu")
@@ -87,7 +96,23 @@ public class Menu {
                         .updateDate(LocalDate.now())
                         .name("Revizie")
                         .duration(2)
-                        .price(300.0)
+                        .price(200.0)
+                        .build(),
+                Work.builder()
+                        .id(UUID.randomUUID())
+                        .creationDate(LocalDate.now())
+                        .updateDate(LocalDate.now())
+                        .name("Vopsit elemente plastic")
+                        .duration(3)
+                        .price(100.0)
+                        .build(),
+                Work.builder()
+                        .id(UUID.randomUUID())
+                        .creationDate(LocalDate.now())
+                        .updateDate(LocalDate.now())
+                        .name("Interventie parte mecanica")
+                        .duration(6)
+                        .price(350.0)
                         .build()
         );
         workService.addAllWorksFromList(works);

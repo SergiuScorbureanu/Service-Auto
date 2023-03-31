@@ -10,7 +10,7 @@ public interface PartService {
 
     void addPart(Part part);
 
-    void addAllParts(List<Part> partList);
+    void addAllPartsFromList(List<Part> partList);
 
     Optional<Part> getPartByName(UUID id);
 

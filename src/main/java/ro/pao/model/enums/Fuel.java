@@ -3,6 +3,9 @@ package ro.pao.model.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 @Getter
 @AllArgsConstructor
 public enum Fuel {
@@ -14,4 +17,10 @@ public enum Fuel {
 
     private final String type;
 
+    public static Optional<Fuel> getFuelByFieldString(String field) {
+        return Arrays.stream(Fuel.values())
+                .filter(enumElement -> enumElement.type.equals(field))
+                .findAny();
+
+    }
 }
