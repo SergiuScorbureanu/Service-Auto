@@ -20,7 +20,7 @@ public enum Body {
 
     public static Optional<Body> getFuelByFieldString(String field) {
         return Arrays.stream(Body.values())
-                .filter(enumElement -> enumElement.type.equals(field))
+                .filter(bodyElement -> bodyElement.type.equals(field))
                 .findAny();
 
     }
