@@ -10,7 +10,8 @@ import java.util.ArrayList;
 @Getter
 public class Sector extends AbstractEntity {
 
+    private String name;
     private ArrayList<Employee> employeesList;
-    private ArrayList<Work> servicesList;
+    private ArrayList<Work> worksList;
 
 }

@@ -14,7 +14,7 @@ public class User extends AbstractEntity {
 
     private String lastName;
     private String firstName;
-    private Long phone;
+    private String phone;
     private String email;
 
     private final Predicate<String> emailCondition = email -> email.contains("@yahoo.com") || email.contains("@gmail.com");
@@ -25,7 +25,7 @@ public class User extends AbstractEntity {
         }
     }
 
-    public User(UUID id, LocalDate creationDate, LocalDate updateDate, LocalDate deleteDate, String lastName, String firstName, Long phone, String email) {
+    public User(UUID id, LocalDate creationDate, LocalDate updateDate, LocalDate deleteDate, String lastName, String firstName, String phone, String email) {
         super(id, creationDate, updateDate, deleteDate);
         this.lastName = lastName;
         this.firstName = firstName;

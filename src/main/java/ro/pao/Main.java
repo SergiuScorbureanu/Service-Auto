@@ -12,7 +12,7 @@ public class Main {
         while (true) {
             Menu menu = Menu.getInstance();
 
-            menu.intro();
+            menu.application();
 
             if ("exit".equals(scanner.next())) {
                 break;

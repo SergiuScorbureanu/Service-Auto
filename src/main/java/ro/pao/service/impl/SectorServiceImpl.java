@@ -36,6 +36,13 @@ public class SectorServiceImpl implements SectorService {
     }
 
     @Override
+    public Optional<Sector> getSectorByName(String name) {
+        return sectorsList.stream()
+                .filter(sector -> name.equals(sector.getName()))
+                .findFirst();
+    }
+
+    @Override
     public List<Sector> getAllSectors() {
         return sectorsList;
     }

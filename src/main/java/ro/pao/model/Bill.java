@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @Getter
 public class Bill extends AbstractEntity {
 
-    private ArrayList<Work> servicesList;
-    private ArrayList<Part> materialsList;
+    private ArrayList<Work> worksList;
+    private ArrayList<Part> partsList;
     private Double totalPrice;
 }

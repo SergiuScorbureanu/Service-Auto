@@ -58,8 +58,4 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-//    public static List<String> getAllEmployeeNames() {
-//        return employeesList.stream().map(User::getFirstName).collect(Collectors.toList());
-//    }
-
 }

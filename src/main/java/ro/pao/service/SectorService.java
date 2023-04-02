@@ -13,6 +13,7 @@ public interface SectorService {
     void addAllSectorsFromList(List<Sector> sectorsList);
 
     Optional<Sector> getSectorById(UUID id);
+    Optional<Sector> getSectorByName(String name);
 
     List<Sector> getAllSectors();
 

@@ -18,7 +18,7 @@ public enum Body {
 
     private final String type;
 
-    public static Optional<Body> getFuelByFieldString(String field) {
+    public static Optional<Body> getBodyByFieldString(String field) {
         return Arrays.stream(Body.values())
                 .filter(bodyElement -> bodyElement.type.equals(field))
                 .findAny();

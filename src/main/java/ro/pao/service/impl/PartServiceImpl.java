@@ -2,7 +2,6 @@ package ro.pao.service.impl;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ro.pao.model.Employee;
 import ro.pao.model.Part;
 import ro.pao.service.PartService;
 
@@ -29,9 +28,16 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public Optional<Part> getPartByName(UUID id) {
+    public Optional<Part> getPartById(UUID id) {
         return partsList.stream()
                 .filter(part -> id.equals(part.getName()))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Part> getPartByName(String name) {
+        return partsList.stream()
+                .filter(part -> name.equals(part.getName()))
                 .findFirst();
     }
 
@@ -49,7 +55,7 @@ public class PartServiceImpl implements PartService {
 
     @Override
     public void updatePartById(UUID id, Part newPart) {
-        Optional<Part> employee = this.getPartByName(id);
+        Optional<Part> employee = this.getPartById(id);
         if(employee.isPresent()) {
             deletePartById(id);
             newPart.setId(id);
