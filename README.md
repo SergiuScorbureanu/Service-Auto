@@ -1,4 +1,5 @@
 Service Auto Project
+O aplicatie Java care simuleaza un service auto, cu ajutorul principiilor de baza ale programarii orientate pe obiecte
 
 
 MODELE
@@ -28,3 +29,8 @@ SERVICE:
 5. SectorService + SectorServiceImpl
 6. VehicleService + VehicleServiceImpl
 7. WorkService + WorkServiceImpl
+
+METODE:
+1. Inregistrare client
+2. Adaugare vehicul
+3. Creare factura
