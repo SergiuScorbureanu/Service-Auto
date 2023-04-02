@@ -6,6 +6,7 @@ O aplicatie Java care simuleaza un service auto, cu ajutorul principiilor de baz
 MODELE
 
 Clasa abstracta: Abstract Entity
+
 Clase:
 1. Bill
 2. Client
