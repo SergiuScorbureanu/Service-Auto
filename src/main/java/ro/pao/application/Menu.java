@@ -1,6 +1,9 @@
 package ro.pao.application;
 
 import ro.pao.model.*;
+import ro.pao.model.abstracts.AbstractEntity;
+import ro.pao.model.enums.Body;
+import ro.pao.model.enums.Fuel;
 import ro.pao.service.*;
 import ro.pao.service.impl.*;
 
@@ -18,15 +21,48 @@ public class Menu {
     private final ClientService clientService = new ClientServiceImpl();
     private final VehicleService vehicleService = new VehicleServiceImpl();
 
-
-
     public static Menu getInstance() {
         return (INSTANCE == null ? new Menu() : INSTANCE);
     }
 
     public void application() {
 
+        // *** MENIU ***
 
+        createObjects(); // adaug obiectele deja existente
+
+        Scanner scanner = new Scanner(System.in);
+        String intro = """
+                ***** MENIU *****
+                1. Inregistrare client
+                2. Adaugare si diagnosticare vehicul
+                """;
+
+        System.out.println("\n\t" + intro);
+        System.out.println();
+
+
+        while (true) {
+
+            System.out.print("\nOptiunea: ");
+            int optiune = scanner.nextInt();
+            System.out.println();
+
+            switch (optiune) {
+                case 1:
+                    addNewClient();
+                    break;
+                case 2:
+                    addNewVehicle();
+                    break;
+                default:
+                    System.out.println("Optiune invalida!");
+                    return;
+            }
+        }
+    }
+
+    void createObjects() {
         List<Sector> sectors = List.of(
                 Sector.builder()
                         .id(UUID.randomUUID())
@@ -52,6 +88,7 @@ public class Menu {
         Optional<Sector> sector1 = sectorService.getSectorByName("Tinichigerie");
         Optional<Sector> sector2 = sectorService.getSectorByName("Mecanica");
         Optional<Sector> sector3 = sectorService.getSectorByName("Vopsitorie");
+
         List<Employee> employees = List.of(
                 Employee.builder()
                         .id(UUID.randomUUID())
@@ -63,7 +100,7 @@ public class Menu {
                         .email("mircea.popescu@yahoo.com")
                         .salary(3500.00)
                         .position("Tinichigiu")
-                        .sectorId(sector1.get().getId())
+                        .sectorId(getSectorUuid(sector1))
                         .build(),
                 Employee.builder()
                         .id(UUID.randomUUID())
@@ -75,7 +112,7 @@ public class Menu {
                         .email("jenel.popa@yahoo.com")
                         .salary(4500.00)
                         .position("Mecanic")
-                        .sectorId(sector2.get().getId())
+                        .sectorId(getSectorUuid(sector2))
                         .build(),
                 Employee.builder()
                         .id(UUID.randomUUID())
@@ -86,7 +123,7 @@ public class Menu {
                         .phone("0735795623")
                         .email("marian.vanghelie@gmail.com")
                         .salary(4500.00)
-                        .sectorId(sector2.get().getId())
+                        .sectorId(getSectorUuid(sector2))
                         .position("Mecanic")
                         .build(),
                 Employee.builder()
@@ -98,7 +135,7 @@ public class Menu {
                         .phone("0725481623")
                         .email("alexandru.petrescu@gmail.com")
                         .salary(4000.00)
-                        .sectorId(sector3.get().getId())
+                        .sectorId(getSectorUuid(sector3))
                         .position("Vopsitor")
                         .build(),
                 Employee.builder()
@@ -110,60 +147,11 @@ public class Menu {
                         .phone("0735791209")
                         .email("viorel.talpan@gmail.com")
                         .salary(6200.00)
-                        .sectorId(sector2.get().getId())
+                        .sectorId(getSectorUuid(sector2))
                         .position("Mecanic sef")
                         .build()
         );
         employeeService.addAllEmployeesFromList(employees);
-
-//        List<Work> works = List.of(
-//                Work.builder()
-//                        .id(UUID.randomUUID())
-//                        .creationDate(LocalDate.now())
-//                        .updateDate(LocalDate.now())
-//                        .name("Revizie")
-//                        .duration(2)
-//                        .price(200.0)
-//                        .sectorId(sector2.get().getId())
-//                        .build(),
-//                Work.builder()
-//                        .id(UUID.randomUUID())
-//                        .creationDate(LocalDate.now())
-//                        .updateDate(LocalDate.now())
-//                        .name("Vopsit elemente plastic")
-//                        .duration(3)
-//                        .price(100.0)
-//                        .sectorId(sector3.get().getId())
-//                        .build(),
-//                Work.builder()
-//                        .id(UUID.randomUUID())
-//                        .creationDate(LocalDate.now())
-//                        .updateDate(LocalDate.now())
-//                        .name("Interventie parte mecanica")
-//                        .duration(5)
-//                        .price(350.0)
-//                        .sectorId(sector2.get().getId())
-//                        .build(),
-//                Work.builder()
-//                        .id(UUID.randomUUID())
-//                        .creationDate(LocalDate.now())
-//                        .updateDate(LocalDate.now())
-//                        .name("Interventie parte electrica")
-//                        .duration(6)
-//                        .price(500.0)
-//                        .sectorId(sector2.get().getId())
-//                        .build(),
-//                Work.builder()
-//                        .id(UUID.randomUUID())
-//                        .creationDate(LocalDate.now())
-//                        .updateDate(LocalDate.now())
-//                        .name("Schimbare chedere")
-//                        .duration(3)
-//                        .price(250.0)
-//                        .sectorId(sector1.get().getId())
-//                        .build()
-//        );
-//        workService.addAllWorksFromList(works);
 
         List<Part> parts = List.of(
                 Part.builder()
@@ -224,47 +212,11 @@ public class Menu {
                         .build()
         );
         partService.addAllPartsFromList(parts);
-
-
-
-        // *** MENIU ***
-
-        Scanner scanner = new Scanner(System.in);
-        String intro = """
-                ***** MENIU *****
-                1. Inregistrare client
-                2. Adaugare vehicul
-                3. Creare factura
-                """;
-
-        System.out.println("\n\t" + intro);
-        System.out.println();
-
-
-        while(true) {
-
-
-            System.out.print("\nOptiunea: ");
-            int optiune = scanner.nextInt();
-            System.out.println();
-
-            switch (optiune) {
-                case 1:
-                    addNewClient();
-                    break;
-                case 2:
-                    addNewVehicle();
-                    break;
-                case 3:
-                    createBill();
-                    break;
-                default:
-                    System.out.println("Optiune invalida!");
-                    return;
-            }
-        }
-
     }
+
+     UUID getSectorUuid(Optional<Sector> sector) {
+         return sector.map(AbstractEntity::getId).orElse(null);
+     }
 
     void addNewClient() {
         Scanner addClientScanner = new Scanner(System.in);
@@ -299,7 +251,7 @@ public class Menu {
                 .CNP(cnp)
                 .address(address)
                 .build();
-
+        clientService.addClient(newClient);
         System.out.println("Cont inregistrat cu succes!");
     }
 
@@ -317,10 +269,34 @@ public class Menu {
         String engineSeries = addVehicleScanner.next();
 
         System.out.println("Tipul de caroserie:");
-        String body = addVehicleScanner.next();
+        System.out.println("1. Sedan");
+        System.out.println("2. Combi");
+        System.out.println("3. Hatchback");
+        System.out.println("4. Monovolum");
+        System.out.println("5. Suv");
+        int intBody = addVehicleScanner.nextInt();
+        Body caroserie = switch (intBody) {
+            case 1 -> Body.SEDAN;
+            case 2 -> Body.COMBI;
+            case 3 -> Body.HATCHBACK;
+            case 4 -> Body.MONOVOLUM;
+            case 5 -> Body.SUV;
+            default -> Body.SEDAN;
+        };
 
         System.out.println("Timpul de combustibil:");
-        String fuel = addVehicleScanner.next();
+        System.out.println("1. Benzina");
+        System.out.println("2. Diesel");
+        System.out.println("3. Electric");
+        System.out.println("4. Hybrid");
+        int intFuel = addVehicleScanner.nextInt();
+        Fuel combustibil = switch (intFuel) {
+            case 1 -> Fuel.PETROL;
+            case 2 -> Fuel.DIESEL;
+            case 3 -> Fuel.ELECTRIC;
+            case 4 -> Fuel.HYBRID;
+            default -> Fuel.PETROL;
+        };
 
 
         System.out.println("Introduceti sectorul in care va fi directionat vehiculul");
@@ -338,7 +314,7 @@ public class Menu {
         switch (optiuneSector) {
             case 1: {
                 Optional<Sector> sector1 = sectorService.getSectorByName("Tinichigerie");
-                Vehicle vehicles = Vehicle.builder()
+                Vehicle newVehicle = Vehicle.builder()
                         .id(UUID.randomUUID())
                         .creationDate(LocalDate.now())
                         .updateDate(LocalDate.now())
@@ -347,11 +323,12 @@ public class Menu {
                         .engineSeries(engineSeries)
                         .sectorId(sector1.get().getId())
                         .build();
+                vehicleService.addVehicle(newVehicle);
                 break;
             }
             case 2: {
                 Optional<Sector> sector2 = sectorService.getSectorByName("Mecanica");
-                Vehicle vehicles = Vehicle.builder()
+                Vehicle newVehicle = Vehicle.builder()
                         .id(UUID.randomUUID())
                         .creationDate(LocalDate.now())
                         .updateDate(LocalDate.now())
@@ -360,11 +337,12 @@ public class Menu {
                         .engineSeries(engineSeries)
                         .sectorId(sector2.get().getId())
                         .build();
+                vehicleService.addVehicle(newVehicle);
                 break;
             }
             case 3: {
                 Optional<Sector> sector3 = sectorService.getSectorByName("Vopsitorie");
-                Vehicle vehicles = Vehicle.builder()
+                Vehicle newVehicle = Vehicle.builder()
                         .id(UUID.randomUUID())
                         .creationDate(LocalDate.now())
                         .updateDate(LocalDate.now())
@@ -373,11 +351,11 @@ public class Menu {
                         .engineSeries(engineSeries)
                         .sectorId(sector3.get().getId())
                         .build();
+                vehicleService.addVehicle(newVehicle);
                 break;
             }
+
         }
-
-
         System.out.println("Introduceti datele servisarii:");
 
         System.out.println("Nume:");
@@ -389,26 +367,45 @@ public class Menu {
         System.out.println("Pret manopera:");
         double price = addVehicleScanner.nextDouble();
 
-//        System.out.println("Piese:");
-//        ArrayList<Part> parts = new ArrayList<>();
-//        String part = addVehicleScanner.next();
-//        partService.getPartByName(part);
-//
-//        Work works = Work.builder()
-//                .id(UUID.randomUUID())
-//                .creationDate(LocalDate.now())
-//                .updateDate(LocalDate.now())
-//                .name(name)
-//                .duration(duration)
-//                .price(price)
-//                .partsList(new ArrayList<Part>(Arrays.asList(parts)))
-//                .build();
+        System.out.println("Piese (separate prin virgula):");
+        String part = addVehicleScanner.next();
+
+        String[] requiredPartsList = part.split(",");
+        ArrayList<Part> allRequiredParts = new ArrayList<>();
+
+        for (String requiredPartName : requiredPartsList) {
+
+            if (partService.getPartByName(requiredPartName).isEmpty()) {
+                System.out.println("Piesa " + requiredPartName + " nu exista in stoc.");
+                System.out.println("Se cumpara piesa...");
+                Part newPart = Part.builder()
+                        .id(UUID.randomUUID())
+                        .creationDate(LocalDate.now())
+                        .updateDate(LocalDate.now())
+                        .code("1234d")
+                        .name(requiredPartName)
+                        .price(50.0)
+                        .build();
+
+                partService.addPart(newPart);
+                allRequiredParts.add(newPart);
+
+            } else allRequiredParts.add(partService.getPartByName(requiredPartName).orElse(null));
+        }
+
+        Work works = Work.builder()
+                .id(UUID.randomUUID())
+                .creationDate(LocalDate.now())
+                .updateDate(LocalDate.now())
+                .name(name)
+                .duration(duration)
+                .price(price)
+                .partsList(allRequiredParts)
+                .build();
+
+        System.out.println();
+        System.out.println("Masina a fost inregistrata cu succes!");
 
     }
-
-    void createBill() {
-        System.out.println("Afisare factura");
-    }
-
 
 }
