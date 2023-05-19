@@ -35,4 +35,3 @@ SERVICE:
 METODE:
 1. Inregistrare client
 2. Adaugare vehicul
-3. Creare factura
