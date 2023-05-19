@@ -1,6 +1,6 @@
 package ro.pao.model;
 
-import lombok.Getter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ro.pao.model.abstracts.AbstractEntity;
 
