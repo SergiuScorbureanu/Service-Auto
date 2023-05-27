@@ -1,9 +1,7 @@
 package ro.pao.repository.implementations;
 
 import ro.pao.configuration.DatabaseConfiguration;
-import ro.pao.mapper.ClientMapper;
 import ro.pao.mapper.VehicleMapper;
-import ro.pao.model.Client;
 import ro.pao.model.Vehicle;
 import ro.pao.model.enums.Body;
 import ro.pao.model.enums.Fuel;

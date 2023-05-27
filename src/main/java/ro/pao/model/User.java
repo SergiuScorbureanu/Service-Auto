@@ -1,7 +1,9 @@
-package ro.pao.model.abstracts;
+package ro.pao.model;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import ro.pao.model.Employee;
+import ro.pao.model.abstracts.AbstractEntity;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -9,7 +11,7 @@ import java.util.function.Predicate;
 
 @SuperBuilder
 @Getter
-public abstract class User extends AbstractEntity {
+public sealed class User extends AbstractEntity permits Employee, Client {
 
     private String lastName;
     private String firstName;

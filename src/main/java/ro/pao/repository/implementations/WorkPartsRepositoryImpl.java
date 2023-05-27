@@ -1,9 +1,9 @@
 package ro.pao.repository.implementations;
 
 import ro.pao.configuration.DatabaseConfiguration;
-import ro.pao.mapper.PartMapper;
-import ro.pao.model.Part;
-import ro.pao.repository.PartRepository;
+import ro.pao.mapper.WorkPartsMapper;
+import ro.pao.model.WorkParts;
+import ro.pao.repository.WorkPartsRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,19 +13,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PartRepositoryImpl implements PartRepository {
+public class WorkPartsRepositoryImpl implements WorkPartsRepository {
 
-    private static final PartMapper partMapper = PartMapper.getInstance();
+    private static final WorkPartsMapper workPartsMapper = WorkPartsMapper.getInstance();
 
     @Override
-    public Optional<Part> getPartById(UUID id) {
-        String selectSql = "SELECT * FROM Part WHERE id=?";
+    public Optional<WorkParts> getWorkPartsById(UUID id) {
+        String selectSql = "SELECT * FROM WorkParts WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, id.toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            return partMapper.mapToPart(resultSet);
+            return WorkPartsMapper.mapToWorkParts(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -35,8 +35,8 @@ public class PartRepositoryImpl implements PartRepository {
     }
 
     @Override
-    public void deletePartById(UUID id) {
-        String deleteNameSql = "DELETE FROM Part WHERE id=?";
+    public void deleteWorkParts(UUID id) {
+        String deleteNameSql = "DELETE FROM WorkParts WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteNameSql)) {
             preparedStatement.setString(1, id.toString());
@@ -48,49 +48,54 @@ public class PartRepositoryImpl implements PartRepository {
     }
 
     @Override
-    public void updatePartById(UUID id, Part newPart) {
-        String updateNameSql = "UPDATE Part \n" +
+    public void updateWorkPartsById(UUID id, WorkParts newWorkParts) {
+        String updateNameSql = "UPDATE WorkParts \n" +
                 "SET code=?, \n" +
                 "name=?, \n" +
                 "price=?, \n" +
+                "wordId=?, \n" +
                 "WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateNameSql)) {
-            preparedStatement.setString(1, newPart.getCode());
-            preparedStatement.setString(2, newPart.getName());
-            preparedStatement.setDouble(3, newPart.getPrice());
-            preparedStatement.setString(4, id.toString());
+            preparedStatement.setString(1, newWorkParts.getCode());
+            preparedStatement.setString(2, newWorkParts.getName());
+            preparedStatement.setDouble(3, newWorkParts.getPrice());
+            preparedStatement.setString(4, newWorkParts.getWorkId().toString());
+            preparedStatement.setString(5, id.toString());
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
-    public void addNewPart(Part part) {
-        String insertSql = "INSERT INTO Part (id, code, name, price) VALUES (?, ?, ?, ?)";
+    public void addNewWorkParts(WorkParts workParts) {
+        String insertSql = "INSERT INTO WorkParts (id, code, name, price, workId) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setString(1, part.getCode());
-            preparedStatement.setString(2, part.getName());
-            preparedStatement.setDouble(3, part.getPrice());
-            preparedStatement.setString(4, part.getId().toString());
+            preparedStatement.setString(1, workParts.getCode());
+            preparedStatement.setString(2, workParts.getName());
+            preparedStatement.setDouble(3, workParts.getPrice());
+            preparedStatement.setString(4, workParts.getWorkId().toString());
+            preparedStatement.setString(5, workParts.getId().toString());
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
-    public List<Part> getAllParts(UUID id) {
-        String selectSql = "SELECT * FROM Part";
+    public List<WorkParts> getAllWorkParts() {
+        String selectSql = "SELECT * FROM WorkParts";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            return partMapper.mapToPartsList(resultSet);
+            return WorkPartsMapper.mapToWorkPartsList(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -98,25 +103,7 @@ public class PartRepositoryImpl implements PartRepository {
     }
 
     @Override
-    public void addAllPartsFromList(List<Part> partList) {
-        partList.forEach(this::addNewPart);
+    public void addAllFromWorkPartsList(List<WorkParts> WorkPartsList) {
+        WorkPartsList.forEach(this::addNewWorkParts);
     }
-
-    @Override
-    public Optional<Part> getPartByName(String name) {
-        String selectSql = "SELECT * FROM Part WHERE name=?";
-        try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
-            preparedStatement.setString(1, name);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return partMapper.mapToPart(resultSet);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.empty();
-    }
-
 }

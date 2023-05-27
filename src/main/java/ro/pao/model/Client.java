@@ -2,14 +2,13 @@ package ro.pao.model;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import ro.pao.model.abstracts.User;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @SuperBuilder
 @Getter
-public class Client extends User {
+public non-sealed class Client extends User {
 
     private String CNP;
     private String address;

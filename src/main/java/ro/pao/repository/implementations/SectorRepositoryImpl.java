@@ -1,9 +1,9 @@
 package ro.pao.repository.implementations;
 
 import ro.pao.configuration.DatabaseConfiguration;
-import ro.pao.mapper.WorkMapper;
-import ro.pao.model.Work;
-import ro.pao.repository.WorkRepository;
+import ro.pao.mapper.SectorMapper;
+import ro.pao.model.Sector;
+import ro.pao.repository.SectorRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,19 +13,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class WorkRepositoryImpl implements WorkRepository {
+public class SectorRepositoryImpl implements SectorRepository {
 
-    private static final WorkMapper workMapper = WorkMapper.getInstance();
+    private static final SectorMapper sectorMapper = SectorMapper.getInstance();
 
     @Override
-    public Optional<Work> getWorkById(UUID id) {
-        String selectSql = "SELECT * FROM Work WHERE id=?";
+    public Optional<Sector> getSectorById(UUID id) {
+        String selectSql = "SELECT * FROM Sector WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, id.toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            return WorkMapper.mapToWork(resultSet);
+            return SectorMapper.mapToSector(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -35,8 +35,25 @@ public class WorkRepositoryImpl implements WorkRepository {
     }
 
     @Override
-    public void deleteWork(UUID id) {
-        String deleteNameSql = "DELETE FROM Work WHERE id=?";
+    public Optional<Sector> getSectorByName(String name) {
+        String selectSql = "SELECT * FROM Sector WHERE name=?";
+        try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
+            preparedStatement.setString(1, name.toString());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return SectorMapper.mapToSector(resultSet);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public void deleteSector(UUID id) {
+        String deleteNameSql = "DELETE FROM Sector WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteNameSql)) {
             preparedStatement.setString(1, id.toString());
@@ -48,22 +65,15 @@ public class WorkRepositoryImpl implements WorkRepository {
     }
 
     @Override
-    public void updateWorksById(UUID id, Work newWork) {
-        String updateNameSql = "UPDATE Work \n" +
-                "SET firstName=?, \n" +
-                "name=?, \n" +
-                "duration=?, \n" +
-                "price=?, \n" +
-                "sectorId=?, \n" +
+    public void updateSectorsById(UUID id, Sector newSector) {
+        String updateNameSql = "UPDATE Sector \n" +
+                "SET name=?, \n" +
                 "WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateNameSql)) {
-            preparedStatement.setString(1, newWork.getName());
-            preparedStatement.setInt(2, newWork.getDuration());
-            preparedStatement.setDouble(3, newWork.getPrice());
-            preparedStatement.setString(4, newWork.getVehicleId().toString());
-            preparedStatement.setString(5, id.toString());
+            preparedStatement.setString(1, newSector.getName());
+            preparedStatement.setString(2, id.toString());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,16 +82,13 @@ public class WorkRepositoryImpl implements WorkRepository {
     }
 
     @Override
-    public void addNewWork(Work Work) {
-        String insertSql = "INSERT INTO Work (id, name, duration, price, sectorId) VALUES (?, ?, ?, ?, ?)";
+    public void addNewSector(Sector Sector) {
+        String insertSql = "INSERT INTO Sector (id, name) VALUES (?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setString(1, Work.getName());
-            preparedStatement.setInt(2, Work.getDuration());
-            preparedStatement.setDouble(3, Work.getPrice());
-            preparedStatement.setString(4, Work.getVehicleId().toString());
-            preparedStatement.setString(5, Work.getId().toString());
+            preparedStatement.setString(1, Sector.getName());
+            preparedStatement.setString(2, Sector.getId().toString());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -90,13 +97,13 @@ public class WorkRepositoryImpl implements WorkRepository {
     }
 
     @Override
-    public List<Work> getAllWorks() {
-        String selectSql = "SELECT * FROM Work";
+    public List<Sector> getAllSectors() {
+        String selectSql = "SELECT * FROM Sector";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            return WorkMapper.mapToWorksList(resultSet);
+            return SectorMapper.mapToSectorsList(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,7 +111,7 @@ public class WorkRepositoryImpl implements WorkRepository {
     }
 
     @Override
-    public void addAllFromWorksList(List<Work> WorkList) {
-        WorkList.forEach(this::addNewWork);
+    public void addAllFromSectorsList(List<Sector> SectorList) {
+        SectorList.forEach(this::addNewSector);
     }
 }

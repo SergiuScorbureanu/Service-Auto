@@ -15,5 +15,5 @@ public class Work extends AbstractEntity {
     private Integer duration;
     private Double price;
     private ArrayList<Part> partsList;
-    private UUID sectorId;
+    private UUID vehicleId;
 }

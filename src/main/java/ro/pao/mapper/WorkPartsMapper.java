@@ -1,7 +1,6 @@
 package ro.pao.mapper;
 
-
-import ro.pao.model.Part;
+import ro.pao.model.WorkParts;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,25 +9,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PartMapper {
+public class WorkPartsMapper {
 
-    private static final PartMapper INSTANCE = new PartMapper();
+    private static final WorkPartsMapper INSTANCE = new WorkPartsMapper();
 
-    private PartMapper() {
+    private WorkPartsMapper() {
     }
 
-    public static PartMapper getInstance() {
+    public static WorkPartsMapper getInstance() {
         return INSTANCE;
     }
 
-    public Optional<Part> mapToPart(ResultSet resultSet) throws SQLException {
+    public static Optional<WorkParts> mapToWorkParts(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return Optional.of(
-                    Part.builder()
+                    WorkParts.builder()
                             .id(UUID.fromString(resultSet.getString(1)))
                             .code(resultSet.getString(2))
                             .name(resultSet.getString(3))
                             .price(resultSet.getDouble(4))
+                            .workId(UUID.fromString(resultSet.getString(5)))
                             .build()
             );
         } else {
@@ -36,19 +36,20 @@ public class PartMapper {
         }
     }
 
-    public List<Part> mapToPartsList(ResultSet resultSet) throws SQLException {
-        List<Part> PartsList = new ArrayList<>();
+    public static List<WorkParts> mapToWorkPartsList(ResultSet resultSet) throws SQLException {
+        List<WorkParts> WorkPartsList = new ArrayList<>();
         while (resultSet.next()) {
-            PartsList.add(
-                    Part.builder()
+            WorkPartsList.add(
+                    WorkParts.builder()
                             .id(UUID.fromString(resultSet.getString(1)))
                             .code(resultSet.getString(2))
                             .name(resultSet.getString(3))
                             .price(resultSet.getDouble(4))
+                            .workId(UUID.fromString(resultSet.getString(5)))
                             .build()
             );
         }
 
-        return PartsList;
+        return WorkPartsList;
     }
 }

@@ -20,7 +20,7 @@ public class SectorMapper {
         return INSTANCE;
     }
 
-    public Optional<Sector> mapToSector(ResultSet resultSet) throws SQLException {
+    public static Optional<Sector> mapToSector(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return Optional.of(
                     Sector.builder()
@@ -33,7 +33,7 @@ public class SectorMapper {
         }
     }
 
-    public List<Sector> mapToSectorsList(ResultSet resultSet) throws SQLException {
+    public static List<Sector> mapToSectorsList(ResultSet resultSet) throws SQLException {
         List<Sector> SectorsList = new ArrayList<>();
         while (resultSet.next()) {
             SectorsList.add(
