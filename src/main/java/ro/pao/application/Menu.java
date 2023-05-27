@@ -4,8 +4,12 @@ import ro.pao.model.*;
 import ro.pao.model.abstracts.AbstractEntity;
 import ro.pao.model.enums.Body;
 import ro.pao.model.enums.Fuel;
+import ro.pao.repository.implementations.ClientRepositoryImpl;
+import ro.pao.repository.implementations.EmployeeRepositoryImpl;
+import ro.pao.repository.implementations.PartRepositoryImpl;
+import ro.pao.repository.implementations.VehicleRepositoryImpl;
 import ro.pao.service.*;
-import ro.pao.service.impl.*;
+import ro.pao.service.implementations.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -14,12 +18,12 @@ public class Menu {
 
     private static Menu INSTANCE;
 
-    private final EmployeeService employeeService = new EmployeeServiceImpl();
+    private final EmployeeService employeeService = new EmployeeServiceImpl(new EmployeeRepositoryImpl());
     private final WorkService workService = new WorkServiceImpl();
     private final SectorService sectorService = new SectorServiceImpl();
-    private final PartService partService = new PartServiceImpl();
-    private final ClientService clientService = new ClientServiceImpl();
-    private final VehicleService vehicleService = new VehicleServiceImpl();
+    private final PartService partService = new PartServiceImpl(new PartRepositoryImpl());
+    private final ClientService clientService = new ClientServiceImpl(new ClientRepositoryImpl());
+    private final VehicleService vehicleService = new VehicleServiceImpl(new VehicleRepositoryImpl());
 
     public static Menu getInstance() {
         return (INSTANCE == null ? new Menu() : INSTANCE);
@@ -151,7 +155,7 @@ public class Menu {
                         .position("Mecanic sef")
                         .build()
         );
-        employeeService.addAllEmployeesFromList(employees);
+        employeeService.addAllFromEmployeesList(employees);
 
         List<Part> parts = List.of(
                 Part.builder()

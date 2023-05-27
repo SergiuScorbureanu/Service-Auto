@@ -1,9 +1,8 @@
-package ro.pao.service.impl;
+package ro.pao.service.implementations;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ro.pao.model.Bill;
-import ro.pao.model.Employee;
 import ro.pao.service.BillService;
 
 import java.util.ArrayList;

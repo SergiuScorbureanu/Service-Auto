@@ -2,6 +2,7 @@ package ro.pao.model;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import ro.pao.model.abstracts.User;
 
 import java.time.LocalDate;
 import java.util.UUID;

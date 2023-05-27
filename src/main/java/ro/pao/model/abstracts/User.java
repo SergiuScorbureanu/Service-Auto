@@ -1,8 +1,7 @@
-package ro.pao.model;
+package ro.pao.model.abstracts;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import ro.pao.model.abstracts.AbstractEntity;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -10,7 +9,7 @@ import java.util.function.Predicate;
 
 @SuperBuilder
 @Getter
-public class User extends AbstractEntity {
+public abstract class User extends AbstractEntity {
 
     private String lastName;
     private String firstName;

@@ -1,8 +1,7 @@
-package ro.pao.service.impl;
+package ro.pao.service.implementations;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ro.pao.model.Employee;
 import ro.pao.model.Sector;
 import ro.pao.service.SectorService;
 
