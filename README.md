@@ -1,37 +1,22 @@
 Service Auto Project
 
-O aplicatie Java care simuleaza un service auto, cu ajutorul principiilor de baza ale programarii orientate pe obiecte
-
+O aplicatie Java care simuleaza un service auto, cu ajutorul principiilor de baza ale programarii orientate pe obiecte.
+Proiectul foloseste o baza de date Postgres care are 7 tabele: Clients, Employees, Parts, Sectors, Vehicles, WorkParts si Works
 
 MODELE
-
 Clasa abstracta: Abstract Entity
-
-Clase:
-1. Bill
-2. Client
-3. Employee
-4. Part
-5. Sector
-6. User
-7. Vehicle
-8. Work
+Clasa Sealed: User
 
 Enum-uri:
 1. Body
 2. Fuel
 
-
-SERVICE:
-
-1. BillService + BillServiceImpl
-2. ClientService + ClientServiceImpl
-3. EmployeeService + EmployeeServiceImpl
-4. PartService + PartServiceImpl
-5. SectorService + SectorServiceImpl
-6. VehicleService + VehicleServiceImpl
-7. WorkService + WorkServiceImpl
+SERVICE si REPOSITORY: Fiecare tabela are un service si un repository implementation care implementeaza cate o interfata service si repository; 
+THREADS: Proiectul contine o clasa denumita ExecuteWorkWorker care face multi threading la mai multe servisari pe un singur autovehicul
+CSV: Factura se scrie in format .csv dupa executarea lucrarilor
 
 METODE:
-1. Inregistrare client
-2. Adaugare vehicul
+1. Stergere angajat
+2. Inregistrare client
+3. Adaugare si diagnosticare vehicul
+4. Incepe servisarea vehiculului 
