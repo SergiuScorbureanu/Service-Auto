@@ -20,7 +20,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public Optional<Employee> getEmployeeById(UUID id) {
-        String selectSql = "SELECT * FROM Employee WHERE id=?";
+        String selectSql = "SELECT * FROM employees WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, id.toString());
@@ -36,8 +36,27 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
+    public UUID getEmployeeIdByName(String firstName, String lastName) {
+        String selectSql = "SELECT id FROM employees WHERE firstName = ? AND lastName = ?";
+        try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return UUID.fromString(resultSet.getString("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
     public void deleteEmployeeById(UUID id) {
-        String deleteNameSql = "DELETE FROM Employee WHERE id=?";
+        String deleteNameSql = "DELETE FROM employees WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteNameSql)) {
             preparedStatement.setString(1, id.toString());
@@ -50,7 +69,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public void updateEmployeeById(UUID id, Employee newEmployee) {
-        String updateNameSql = "UPDATE Employee \n" +
+        String updateNameSql = "UPDATE employees " +
                 "SET firstName=?, \n" +
                 "lastName=?, \n" +
                 "phone=?, \n" +
@@ -71,6 +90,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             preparedStatement.setObject(6, newEmployee.getSectorId());
             preparedStatement.setObject(7, id.toString());
 
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -78,19 +98,20 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public void addNewEmployee(Employee employee) {
-        String insertSql = "INSERT INTO Employee (id, firstName, lastName, phone, email, position, salary, sectorId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSql = "INSERT INTO employees (id, firstName, lastName, phone, email, position, salary, sectorId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setString(1, employee.getFirstName());
-            preparedStatement.setString(2, employee.getLastName());
-            preparedStatement.setString(3, employee.getPhone());
-            preparedStatement.setString(4, employee.getEmail());
-            preparedStatement.setString(5, employee.getPosition());
-            preparedStatement.setDouble(6, employee.getSalary());
-            preparedStatement.setString(6, employee.getSectorId().toString());
-            preparedStatement.setString(7, employee.getId().toString());
+            preparedStatement.setObject(1, employee.getId());
+            preparedStatement.setString(2, employee.getFirstName());
+            preparedStatement.setString(3, employee.getLastName());
+            preparedStatement.setString(4, employee.getPhone());
+            preparedStatement.setString(5, employee.getEmail());
+            preparedStatement.setString(6, employee.getPosition());
+            preparedStatement.setDouble(7, employee.getSalary());
+            preparedStatement.setObject(8, employee.getSectorId());
 
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -98,7 +119,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public List<Employee> getAllEmployees() {
-        String selectSql = "SELECT * FROM Employee";
+        String selectSql = "SELECT * FROM employees";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {

@@ -29,8 +29,7 @@ public class WorkMapper {
                             .name(resultSet.getString(2))
                             .duration(resultSet.getInt(3))
                             .price(resultSet.getDouble(4))
-                            .partsList((ArrayList<Part>) resultSet.getObject(5))
-                            .vehicleId(UUID.fromString(resultSet.getString(6)))
+                            .vehicleId(UUID.fromString(resultSet.getString(5)))
                             .build()
             );
         } else {
@@ -47,8 +46,7 @@ public class WorkMapper {
                             .name(resultSet.getString(2))
                             .duration(resultSet.getInt(3))
                             .price(resultSet.getDouble(4))
-                            .partsList((ArrayList<Part>) resultSet.getObject(5))
-                            .vehicleId(UUID.fromString(resultSet.getString(6)))
+                            .vehicleId(UUID.fromString(resultSet.getString(5)))
                             .build()
             );
         }

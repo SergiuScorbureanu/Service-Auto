@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @SuperBuilder
 @Getter
-public class WorkParts extends Part {
+public class WorkPart extends Part {
 
     private UUID workId;
 }

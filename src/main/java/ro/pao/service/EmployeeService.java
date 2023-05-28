@@ -19,4 +19,6 @@ public interface EmployeeService {
     void deleteEmployeeById(UUID id);
 
     void updateEmployeeById(UUID id, Employee newEmployee);
+
+    UUID getEmployeeIdByName(String firstName, String lastName);
 }

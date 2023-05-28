@@ -1,0 +1,85 @@
+--CREATE TABLE sectors (
+--                        id uuid PRIMARY KEY,
+--                        name VARCHAR ( 255 ) NOT NULL,
+--                        creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                        updateDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                        deleteDate  TIMESTAMP
+--);
+--
+--CREATE TABLE parts (
+--                      id uuid PRIMARY KEY,
+--                      code VARCHAR ( 255 ) NOT NULL,
+--                      name VARCHAR ( 255 ) NOT NULL,
+--                      price NUMERIC(10, 2) NOT NULL,
+--                      creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                      updateDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                      deleteDate  TIMESTAMP
+--);
+--
+--CREATE TABLE employees (
+--                             id uuid PRIMARY KEY,
+--                             lastName VARCHAR ( 255 ) NOT NULL,
+--                             firstName VARCHAR ( 255 ) NOT NULL,
+--                             phone VARCHAR ( 10 ) NOT NULL,
+--                             email VARCHAR ( 255 ) NOT NULL,
+--                             position VARCHAR ( 255 ) NOT NULL,
+--                             salary NUMERIC(10, 2) NOT NULL,
+--                             sectorId uuid,
+--                             FOREIGN KEY (sectorId)
+--                                 REFERENCES sectors (id),
+--                             creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                             updateDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                             deleteDate  TIMESTAMP
+--  );
+--
+--CREATE TABLE clients (
+--                        id uuid PRIMARY KEY,
+--                        lastName VARCHAR ( 255 ) UNIQUE NOT NULL,
+--                        firstName VARCHAR ( 255 ) NOT NULL,
+--                        address VARCHAR ( 255 ) NOT NULL,
+--                        phone VARCHAR ( 10 ) NOT NULL,
+--                        email VARCHAR ( 255 ) NOT NULL,
+--                        CNP VARCHAR ( 255 ) UNIQUE NOT NULL,
+--                        creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                        updateDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                        deleteDate  TIMESTAMP
+--);
+--
+--CREATE TABLE vehicles (
+--                        id uuid PRIMARY KEY,
+--                        defect VARCHAR ( 255 ) NOT NULL,
+--                        chassisSeries VARCHAR ( 255 ) NOT NULL,
+--                        engineSeries VARCHAR ( 255 ) NOT NULL,
+--                        sectorId uuid,
+--                        FOREIGN KEY (sectorId)
+--                            REFERENCES sectors (id),
+--                        creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                        updateDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                        deleteDate  TIMESTAMP
+--);
+--
+--CREATE TABLE works (
+--                         id uuid PRIMARY KEY,
+--                         name VARCHAR ( 255 ) NOT NULL,
+--                         duration INT NOT NULL,
+--                         price NUMERIC(10, 2) NOT NULL,
+--                         vehicleId uuid,
+--                         FOREIGN KEY (vehicleId)
+--                             REFERENCES vehicles (id),
+--                         creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                         updateDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                         deleteDate  TIMESTAMP
+--);
+--
+--CREATE TABLE work_parts (
+--                           id uuid PRIMARY KEY,
+--                           code VARCHAR ( 255 ) NOT NULL,
+--                           name VARCHAR ( 255 ) NOT NULL,
+--                           price NUMERIC(10, 2) NOT NULL,
+--                           workId uuid,
+--                           FOREIGN KEY (workId)
+--                               REFERENCES works (id),
+--                           creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                           updateDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+--                           deleteDate  TIMESTAMP
+--);

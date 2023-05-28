@@ -18,5 +18,7 @@ public interface EmployeeRepository {
 
     void deleteEmployeeById(UUID id);
 
+    UUID getEmployeeIdByName(String firstName, String lastName);
+
     void updateEmployeeById(UUID id, Employee newEmployee);
 }

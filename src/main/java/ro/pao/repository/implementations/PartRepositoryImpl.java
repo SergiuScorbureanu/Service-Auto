@@ -19,7 +19,7 @@ public class PartRepositoryImpl implements PartRepository {
 
     @Override
     public Optional<Part> getPartById(UUID id) {
-        String selectSql = "SELECT * FROM Part WHERE id=?";
+        String selectSql = "SELECT * FROM parts WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, id.toString());
@@ -36,7 +36,7 @@ public class PartRepositoryImpl implements PartRepository {
 
     @Override
     public void deletePartById(UUID id) {
-        String deleteNameSql = "DELETE FROM Part WHERE id=?";
+        String deleteNameSql = "DELETE FROM parts WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteNameSql)) {
             preparedStatement.setString(1, id.toString());
@@ -49,7 +49,7 @@ public class PartRepositoryImpl implements PartRepository {
 
     @Override
     public void updatePartById(UUID id, Part newPart) {
-        String updateNameSql = "UPDATE Part \n" +
+        String updateNameSql = "UPDATE parts \n" +
                 "SET code=?, \n" +
                 "name=?, \n" +
                 "price=?, \n" +
@@ -60,8 +60,9 @@ public class PartRepositoryImpl implements PartRepository {
             preparedStatement.setString(1, newPart.getCode());
             preparedStatement.setString(2, newPart.getName());
             preparedStatement.setDouble(3, newPart.getPrice());
-            preparedStatement.setString(4, id.toString());
+            preparedStatement.setObject(4, id);
 
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -69,23 +70,24 @@ public class PartRepositoryImpl implements PartRepository {
 
     @Override
     public void addNewPart(Part part) {
-        String insertSql = "INSERT INTO Part (id, code, name, price) VALUES (?, ?, ?, ?)";
+        String insertSql = "INSERT INTO parts (id, code, name, price) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setString(1, part.getCode());
-            preparedStatement.setString(2, part.getName());
-            preparedStatement.setDouble(3, part.getPrice());
-            preparedStatement.setString(4, part.getId().toString());
+            preparedStatement.setObject(1, part.getId());
+            preparedStatement.setString(2, part.getCode());
+            preparedStatement.setString(3, part.getName());
+            preparedStatement.setDouble(4, part.getPrice());
 
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public List<Part> getAllParts(UUID id) {
-        String selectSql = "SELECT * FROM Part";
+    public List<Part> getAllParts() {
+        String selectSql = "SELECT * FROM parts";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
@@ -104,7 +106,7 @@ public class PartRepositoryImpl implements PartRepository {
 
     @Override
     public Optional<Part> getPartByName(String name) {
-        String selectSql = "SELECT * FROM Part WHERE name=?";
+        String selectSql = "SELECT * FROM parts WHERE name=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, name);

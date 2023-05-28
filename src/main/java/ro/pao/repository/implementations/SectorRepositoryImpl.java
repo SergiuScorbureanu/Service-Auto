@@ -19,7 +19,7 @@ public class SectorRepositoryImpl implements SectorRepository {
 
     @Override
     public Optional<Sector> getSectorById(UUID id) {
-        String selectSql = "SELECT * FROM Sector WHERE id=?";
+        String selectSql = "SELECT * FROM sectors WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, id.toString());
@@ -36,10 +36,10 @@ public class SectorRepositoryImpl implements SectorRepository {
 
     @Override
     public Optional<Sector> getSectorByName(String name) {
-        String selectSql = "SELECT * FROM Sector WHERE name=?";
+        String selectSql = "SELECT * FROM sectors WHERE name=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
-            preparedStatement.setString(1, name.toString());
+            preparedStatement.setString(1, name);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             return SectorMapper.mapToSector(resultSet);
@@ -53,7 +53,7 @@ public class SectorRepositoryImpl implements SectorRepository {
 
     @Override
     public void deleteSector(UUID id) {
-        String deleteNameSql = "DELETE FROM Sector WHERE id=?";
+        String deleteNameSql = "DELETE FROM sectors WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteNameSql)) {
             preparedStatement.setString(1, id.toString());
@@ -66,7 +66,7 @@ public class SectorRepositoryImpl implements SectorRepository {
 
     @Override
     public void updateSectorsById(UUID id, Sector newSector) {
-        String updateNameSql = "UPDATE Sector \n" +
+        String updateNameSql = "UPDATE sectors \n" +
                 "SET name=?, \n" +
                 "WHERE id=?";
 
@@ -75,6 +75,7 @@ public class SectorRepositoryImpl implements SectorRepository {
             preparedStatement.setString(1, newSector.getName());
             preparedStatement.setString(2, id.toString());
 
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -83,13 +84,14 @@ public class SectorRepositoryImpl implements SectorRepository {
 
     @Override
     public void addNewSector(Sector Sector) {
-        String insertSql = "INSERT INTO Sector (id, name) VALUES (?, ?)";
+        String insertSql = "INSERT INTO sectors (id, name) VALUES (?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setString(1, Sector.getName());
-            preparedStatement.setString(2, Sector.getId().toString());
+            preparedStatement.setObject(1, Sector.getId());
+            preparedStatement.setString(2, Sector.getName());
 
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -98,7 +100,7 @@ public class SectorRepositoryImpl implements SectorRepository {
 
     @Override
     public List<Sector> getAllSectors() {
-        String selectSql = "SELECT * FROM Sector";
+        String selectSql = "SELECT * FROM sectors";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
@@ -111,7 +113,7 @@ public class SectorRepositoryImpl implements SectorRepository {
     }
 
     @Override
-    public void addAllFromSectorsList(List<Sector> SectorList) {
-        SectorList.forEach(this::addNewSector);
+    public void addAllFromSectorsList(List<Sector> sectorList) {
+        sectorList.forEach(this::addNewSector);
     }
 }

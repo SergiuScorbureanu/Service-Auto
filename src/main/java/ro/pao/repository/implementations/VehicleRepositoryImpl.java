@@ -21,7 +21,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
 
     @Override
     public Optional<Vehicle> getVehicleById(UUID id) {
-        String selectSql = "SELECT * FROM Vehicle WHERE id=?";
+        String selectSql = "SELECT * FROM vehicles WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, id.toString());
@@ -38,7 +38,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
 
     @Override
     public void deleteVehicle(UUID id) {
-        String deleteNameSql = "DELETE FROM Vehicle WHERE id=?";
+        String deleteNameSql = "DELETE FROM vehicles WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteNameSql)) {
             preparedStatement.setString(1, id.toString());
@@ -51,22 +51,20 @@ public class VehicleRepositoryImpl implements VehicleRepository {
 
     @Override
     public void updateVehiclesById(UUID id, Vehicle newVehicle) {
-        String updateNameSql = "UPDATE Vehicle \n" +
+        String updateNameSql = "UPDATE vehicles \n" +
                 "SET defect=?, \n" +
                 "chassisSeries=?, \n" +
                 "engineSeries=?, \n" +
-                "body=?, \n" +
-                "fuel=?, \n";
+                "WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateNameSql)) {
             preparedStatement.setString(1, newVehicle.getDefect());
             preparedStatement.setString(2, newVehicle.getChassisSeries());
             preparedStatement.setString(3, newVehicle.getEngineSeries());
-            preparedStatement.setString(4, newVehicle.getBody().toString());
-            preparedStatement.setString(5, newVehicle.getFuel().toString());
             preparedStatement.setString(6, id.toString());
 
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -74,17 +72,17 @@ public class VehicleRepositoryImpl implements VehicleRepository {
 
     @Override
     public void addNewVehicle(Vehicle vehicle) {
-        String insertSql = "INSERT INTO Vehicle (id, defect, chassisSeries, engineSeries, body, fuel) VALUES (?, ?, ?, ?, ?, ?)";
+        String insertSql = "INSERT INTO vehicles (id, defect, chassisSeries, engineSeries, sectorid) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setString(1, vehicle.getDefect());
-            preparedStatement.setString(2, vehicle.getChassisSeries());
-            preparedStatement.setString(3, vehicle.getEngineSeries());
-            preparedStatement.setString(4, vehicle.getBody().name());
-            preparedStatement.setString(5, vehicle.getFuel().name());
-            preparedStatement.setString(6, vehicle.getId().toString());
+            preparedStatement.setObject(1, vehicle.getId());
+            preparedStatement.setString(2, vehicle.getDefect());
+            preparedStatement.setString(3, vehicle.getChassisSeries());
+            preparedStatement.setString(4, vehicle.getEngineSeries());
+            preparedStatement.setObject(5, vehicle.getSectorId());
 
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -92,7 +90,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
 
     @Override
     public List<Vehicle> getAllVehicles() {
-        String selectSql = "SELECT * FROM Vehicle";
+        String selectSql = "SELECT * FROM vehicles";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {

@@ -16,7 +16,7 @@ public interface PartRepository {
 
     Optional<Part> getPartByName(String name);
 
-    List<Part> getAllParts(UUID id);
+    List<Part> getAllParts();
 
     void deletePartById(UUID id);
 

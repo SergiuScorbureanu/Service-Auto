@@ -37,8 +37,8 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public List<Part> getAllParts(UUID id) {
-        return partRepository.getAllParts(id);
+    public List<Part> getAllParts() {
+        return partRepository.getAllParts();
     }
 
     @Override

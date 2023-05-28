@@ -20,7 +20,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public Optional<Client> getClientById(UUID id) {
-        String selectSql = "SELECT * FROM Client WHERE id=?";
+        String selectSql = "SELECT * FROM clients WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, id.toString());
@@ -37,7 +37,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public void deleteClient(UUID id) {
-        String deleteNameSql = "DELETE FROM Client WHERE id=?";
+        String deleteNameSql = "DELETE FROM clients WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteNameSql)) {
             preparedStatement.setString(1, id.toString());
@@ -50,7 +50,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public void updateClientsById(UUID id, Client newClient) {
-        String updateNameSql = "UPDATE Client \n" +
+        String updateNameSql = "UPDATE clients \n" +
                 "SET firstName=?, \n" +
                 "lastName=?, \n" +
                 "phone=?, \n" +
@@ -69,6 +69,7 @@ public class ClientRepositoryImpl implements ClientRepository {
             preparedStatement.setString(6, newClient.getAddress());
             preparedStatement.setString(7, id.toString());
 
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,18 +78,19 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public void addNewClient(Client client) {
-        String insertSql = "INSERT INTO Client (id, firstName, lastName, phone, email, CNP, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertSql = "INSERT INTO clients (id, firstName, lastName, phone, email, CNP, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setString(1, client.getFirstName());
-            preparedStatement.setString(2, client.getLastName());
-            preparedStatement.setString(3, client.getPhone());
-            preparedStatement.setString(4, client.getEmail());
-            preparedStatement.setString(5, client.getCNP());
-            preparedStatement.setString(6, client.getAddress());
-            preparedStatement.setString(7, client.getId().toString());
+            preparedStatement.setObject(1, client.getId());
+            preparedStatement.setString(2, client.getFirstName());
+            preparedStatement.setString(3, client.getLastName());
+            preparedStatement.setString(4, client.getPhone());
+            preparedStatement.setString(5, client.getEmail());
+            preparedStatement.setString(6, client.getCNP());
+            preparedStatement.setString(7, client.getAddress());
 
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -97,7 +99,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public List<Client> getAllClients() {
-        String selectSql = "SELECT * FROM Client";
+        String selectSql = "SELECT * FROM clients";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {

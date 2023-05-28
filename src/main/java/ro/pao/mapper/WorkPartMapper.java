@@ -1,6 +1,6 @@
 package ro.pao.mapper;
 
-import ro.pao.model.WorkParts;
+import ro.pao.model.WorkPart;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,21 +9,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class WorkPartsMapper {
+public class WorkPartMapper {
 
-    private static final WorkPartsMapper INSTANCE = new WorkPartsMapper();
+    private static final WorkPartMapper INSTANCE = new WorkPartMapper();
 
-    private WorkPartsMapper() {
+    private WorkPartMapper() {
     }
 
-    public static WorkPartsMapper getInstance() {
+    public static WorkPartMapper getInstance() {
         return INSTANCE;
     }
 
-    public static Optional<WorkParts> mapToWorkParts(ResultSet resultSet) throws SQLException {
+    public static Optional<WorkPart> mapToWorkPart(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return Optional.of(
-                    WorkParts.builder()
+                    WorkPart.builder()
                             .id(UUID.fromString(resultSet.getString(1)))
                             .code(resultSet.getString(2))
                             .name(resultSet.getString(3))
@@ -36,11 +36,11 @@ public class WorkPartsMapper {
         }
     }
 
-    public static List<WorkParts> mapToWorkPartsList(ResultSet resultSet) throws SQLException {
-        List<WorkParts> WorkPartsList = new ArrayList<>();
+    public static List<WorkPart> mapToWorkPartList(ResultSet resultSet) throws SQLException {
+        List<WorkPart> workPartList = new ArrayList<>();
         while (resultSet.next()) {
-            WorkPartsList.add(
-                    WorkParts.builder()
+            workPartList.add(
+                    WorkPart.builder()
                             .id(UUID.fromString(resultSet.getString(1)))
                             .code(resultSet.getString(2))
                             .name(resultSet.getString(3))
@@ -50,6 +50,6 @@ public class WorkPartsMapper {
             );
         }
 
-        return WorkPartsList;
+        return workPartList;
     }
 }

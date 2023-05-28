@@ -19,7 +19,7 @@ public class WorkRepositoryImpl implements WorkRepository {
 
     @Override
     public Optional<Work> getWorkById(UUID id) {
-        String selectSql = "SELECT * FROM Work WHERE id=?";
+        String selectSql = "SELECT * FROM works WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
             preparedStatement.setString(1, id.toString());
@@ -36,7 +36,7 @@ public class WorkRepositoryImpl implements WorkRepository {
 
     @Override
     public void deleteWork(UUID id) {
-        String deleteNameSql = "DELETE FROM Work WHERE id=?";
+        String deleteNameSql = "DELETE FROM works WHERE id=?";
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteNameSql)) {
             preparedStatement.setString(1, id.toString());
@@ -49,12 +49,11 @@ public class WorkRepositoryImpl implements WorkRepository {
 
     @Override
     public void updateWorksById(UUID id, Work newWork) {
-        String updateNameSql = "UPDATE Work \n" +
-                "SET firstName=?, \n" +
-                "name=?, \n" +
+        String updateNameSql = "UPDATE works \n" +
+                "SET name=?, \n" +
                 "duration=?, \n" +
                 "price=?, \n" +
-                "sectorId=?, \n" +
+                "vehicleid=?, \n" +
                 "WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
@@ -62,9 +61,10 @@ public class WorkRepositoryImpl implements WorkRepository {
             preparedStatement.setString(1, newWork.getName());
             preparedStatement.setInt(2, newWork.getDuration());
             preparedStatement.setDouble(3, newWork.getPrice());
-            preparedStatement.setString(4, newWork.getVehicleId().toString());
-            preparedStatement.setString(5, id.toString());
+            preparedStatement.setObject(4, newWork.getVehicleId());
+            preparedStatement.setObject(5, id);
 
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -72,17 +72,18 @@ public class WorkRepositoryImpl implements WorkRepository {
     }
 
     @Override
-    public void addNewWork(Work Work) {
-        String insertSql = "INSERT INTO Work (id, name, duration, price, sectorId) VALUES (?, ?, ?, ?, ?)";
+    public void addNewWork(Work work) {
+        String insertSql = "INSERT INTO works (id, name, duration, price, vehicleid) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setString(1, Work.getName());
-            preparedStatement.setInt(2, Work.getDuration());
-            preparedStatement.setDouble(3, Work.getPrice());
-            preparedStatement.setString(4, Work.getVehicleId().toString());
-            preparedStatement.setString(5, Work.getId().toString());
+            preparedStatement.setObject(1, work.getId());
+            preparedStatement.setString(2, work.getName());
+            preparedStatement.setInt(3, work.getDuration());
+            preparedStatement.setDouble(4, work.getPrice());
+            preparedStatement.setObject(5, work.getVehicleId());
 
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,7 +92,7 @@ public class WorkRepositoryImpl implements WorkRepository {
 
     @Override
     public List<Work> getAllWorks() {
-        String selectSql = "SELECT * FROM Work";
+        String selectSql = "SELECT * FROM works";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {

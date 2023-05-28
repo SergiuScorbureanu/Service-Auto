@@ -46,4 +46,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.updateEmployeeById(id, newEmployee);
     }
 
+    @Override
+    public UUID getEmployeeIdByName(String firstName, String lastName) {
+        return employeeRepository.getEmployeeIdByName(firstName, lastName);
+    }
+
 }
