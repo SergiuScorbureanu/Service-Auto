@@ -1,6 +1,5 @@
 package ro.pao.service;
 
-import ro.pao.model.Employee;
 import ro.pao.model.Vehicle;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public interface VehicleService {
 
     void addVehicle(Vehicle vehicle);
 
-    void addAllVehiclesFromList(List<Vehicle> vehicleList);
+    void addAllFromVehiclesList(List<Vehicle> vehicleList);
 
     Optional<Vehicle> getVehicleById(UUID id);
 

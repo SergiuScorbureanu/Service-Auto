@@ -1,15 +1,14 @@
-package ro.pao.service;
+package ro.pao.repository;
 
 import ro.pao.model.Part;
-import ro.pao.model.Sector;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PartService {
+public interface PartRepository {
 
-    void addPart(Part part);
+    void addNewPart(Part part);
 
     void addAllPartsFromList(List<Part> partList);
 
@@ -22,6 +21,4 @@ public interface PartService {
     void deletePartById(UUID id);
 
     void updatePartById(UUID id, Part newPart);
-
-
 }

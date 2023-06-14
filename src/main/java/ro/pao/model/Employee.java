@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @SuperBuilder
 @Getter
-public class Employee extends User {
+public non-sealed class Employee extends User {
 
     private String position;
     private Double salary;

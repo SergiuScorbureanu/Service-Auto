@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ro.pao.model.abstracts.AbstractEntity;
 
+import java.util.UUID;
+
 @SuperBuilder
 @Getter
 public class Part extends AbstractEntity {

@@ -5,11 +5,10 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 @SuperBuilder
 @Getter
-public class Client extends User {
+public non-sealed class Client extends User {
 
     private String CNP;
     private String address;

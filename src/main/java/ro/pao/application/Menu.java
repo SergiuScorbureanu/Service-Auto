@@ -1,11 +1,11 @@
 package ro.pao.application;
 
+import ro.pao.exceptions.CustomFileNotFoundException;
 import ro.pao.model.*;
 import ro.pao.model.abstracts.AbstractEntity;
-import ro.pao.model.enums.Body;
-import ro.pao.model.enums.Fuel;
+import ro.pao.repository.implementations.*;
 import ro.pao.service.*;
-import ro.pao.service.impl.*;
+import ro.pao.service.implementations.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -14,18 +14,20 @@ public class Menu {
 
     private static Menu INSTANCE;
 
-    private final EmployeeService employeeService = new EmployeeServiceImpl();
-    private final WorkService workService = new WorkServiceImpl();
-    private final SectorService sectorService = new SectorServiceImpl();
-    private final PartService partService = new PartServiceImpl();
-    private final ClientService clientService = new ClientServiceImpl();
-    private final VehicleService vehicleService = new VehicleServiceImpl();
+    private final EmployeeService employeeService = new EmployeeServiceImpl(new EmployeeRepositoryImpl());
+    private final WorkService workService = new WorkServiceImpl(new WorkRepositoryImpl());
+    private final SectorService sectorService = new SectorServiceImpl(new SectorRepositoryImpl());
+    private final PartService partService = new PartServiceImpl(new PartRepositoryImpl());
+    private final ClientService clientService = new ClientServiceImpl(new ClientRepositoryImpl());
+    private final VehicleService vehicleService = new VehicleServiceImpl(new VehicleRepositoryImpl());
+    private final WorkPartService workPartService = new WorkPartServiceImpl(new WorkPartRepositoryImpl());
+    private final ThreadingServiceImpl threadingService = new ThreadingServiceImpl();
 
     public static Menu getInstance() {
         return (INSTANCE == null ? new Menu() : INSTANCE);
     }
 
-    public void application() {
+    public void application() throws CustomFileNotFoundException {
 
         // *** MENIU ***
 
@@ -34,8 +36,10 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
         String intro = """
                 ***** MENIU *****
-                1. Inregistrare client
-                2. Adaugare si diagnosticare vehicul
+                1. Stergere angajat
+                2. Inregistrare client
+                3. Adaugare si diagnosticare vehicul
+                4. Pune osu' la munca
                 """;
 
         System.out.println("\n\t" + intro);
@@ -50,16 +54,29 @@ public class Menu {
 
             switch (optiune) {
                 case 1:
-                    addNewClient();
-                    break;
+                    deleteEmployee();
+                    System.out.println("\n\t" + intro);
                 case 2:
+                    addNewClient();
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 3:
                     addNewVehicle();
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 4:
+                    executeWork();
                     break;
                 default:
                     System.out.println("Optiune invalida!");
                     return;
             }
         }
+    }
+
+    private void executeWork() {
+        this.threadingService.executeWork();
+
     }
 
     void createObjects() {
@@ -84,7 +101,6 @@ public class Menu {
                         .build()
         );
         sectorService.addAllSectorsFromList(sectors);
-
         Optional<Sector> sector1 = sectorService.getSectorByName("Tinichigerie");
         Optional<Sector> sector2 = sectorService.getSectorByName("Mecanica");
         Optional<Sector> sector3 = sectorService.getSectorByName("Vopsitorie");
@@ -118,7 +134,7 @@ public class Menu {
                         .id(UUID.randomUUID())
                         .creationDate(LocalDate.now())
                         .updateDate(LocalDate.now())
-                        .firstName("Mrian")
+                        .firstName("Marian")
                         .lastName("Vanghelie")
                         .phone("0735795623")
                         .email("marian.vanghelie@gmail.com")
@@ -151,7 +167,7 @@ public class Menu {
                         .position("Mecanic sef")
                         .build()
         );
-        employeeService.addAllEmployeesFromList(employees);
+        employeeService.addAllFromEmployeesList(employees);
 
         List<Part> parts = List.of(
                 Part.builder()
@@ -214,9 +230,55 @@ public class Menu {
         partService.addAllPartsFromList(parts);
     }
 
-     UUID getSectorUuid(Optional<Sector> sector) {
-         return sector.map(AbstractEntity::getId).orElse(null);
-     }
+    UUID getSectorUuid(Optional<Sector> sector) {
+        return sector.map(AbstractEntity::getId).orElse(null);
+    }
+
+    void deleteEmployee() throws CustomFileNotFoundException {
+
+        List<Employee> employees = employeeService.getAllEmployees();
+        System.out.println("Numar total de angajati: " + employees.size());
+        System.out.println("Lista angajati: ");
+        for (Employee employee : employees) {
+            System.out.println("ID: " + employee.getId());
+            System.out.println("Nume: " + employee.getFirstName() + " " + employee.getLastName());
+            System.out.println("Telefon: " + employee.getPhone());
+            System.out.println("Email: " + employee.getEmail());
+            System.out.println("Salariu: " + employee.getSalary());
+            System.out.println("Poziție: " + employee.getPosition());
+            System.out.println("Sector ID: " + employee.getSectorId());
+            System.out.println("----------------------------------");
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Introduceți numele angajatului pe care doriti sa il stergeti:");
+        System.out.print("Prenume: ");
+        String firstName = scanner.nextLine();
+        System.out.print("Nume de familie: ");
+        String lastName = scanner.nextLine();
+
+        UUID employeeId = employeeService.getEmployeeIdByName(firstName, lastName);
+        if (employeeId != null) {
+            employeeService.deleteEmployeeById(employeeId);
+            System.out.println("Angajatul a fost concediat cu succes.");
+        } else {
+            throw new  CustomFileNotFoundException ("Angajatul nu exista in baza de date");
+        }
+
+        System.out.println("Numar total de angajati: " + employees.size());
+        System.out.println("Lista angajati: ");
+        for (Employee employee : employees) {
+            System.out.println("ID: " + employee.getId());
+            System.out.println("Nume: " + employee.getFirstName() + " " + employee.getLastName());
+            System.out.println("Telefon: " + employee.getPhone());
+            System.out.println("Email: " + employee.getEmail());
+            System.out.println("Salariu: " + employee.getSalary());
+            System.out.println("Poziție: " + employee.getPosition());
+            System.out.println("Sector ID: " + employee.getSectorId());
+            System.out.println("----------------------------------");
+        }
+        System.out.println("Numar total de angajati: " + employees.size());
+    }
 
     void addNewClient() {
         Scanner addClientScanner = new Scanner(System.in);
@@ -268,36 +330,6 @@ public class Menu {
         System.out.println("Seria de motor:");
         String engineSeries = addVehicleScanner.next();
 
-        System.out.println("Tipul de caroserie:");
-        System.out.println("1. Sedan");
-        System.out.println("2. Combi");
-        System.out.println("3. Hatchback");
-        System.out.println("4. Monovolum");
-        System.out.println("5. Suv");
-        int intBody = addVehicleScanner.nextInt();
-        Body caroserie = switch (intBody) {
-            case 1 -> Body.SEDAN;
-            case 2 -> Body.COMBI;
-            case 3 -> Body.HATCHBACK;
-            case 4 -> Body.MONOVOLUM;
-            case 5 -> Body.SUV;
-            default -> Body.SEDAN;
-        };
-
-        System.out.println("Timpul de combustibil:");
-        System.out.println("1. Benzina");
-        System.out.println("2. Diesel");
-        System.out.println("3. Electric");
-        System.out.println("4. Hybrid");
-        int intFuel = addVehicleScanner.nextInt();
-        Fuel combustibil = switch (intFuel) {
-            case 1 -> Fuel.PETROL;
-            case 2 -> Fuel.DIESEL;
-            case 3 -> Fuel.ELECTRIC;
-            case 4 -> Fuel.HYBRID;
-            default -> Fuel.PETROL;
-        };
-
 
         System.out.println("Introduceti sectorul in care va fi directionat vehiculul");
 
@@ -309,10 +341,11 @@ public class Menu {
                 """);
 
         System.out.println("Introduceti sectorul:");
-        int optiuneSector = addVehicleScanner.nextInt();
 
+        int optiuneSector = addVehicleScanner.nextInt();
+        UUID vehicleUuid = null;
         switch (optiuneSector) {
-            case 1: {
+            case 1 -> {
                 Optional<Sector> sector1 = sectorService.getSectorByName("Tinichigerie");
                 Vehicle newVehicle = Vehicle.builder()
                         .id(UUID.randomUUID())
@@ -321,12 +354,12 @@ public class Menu {
                         .defect(defect)
                         .chassisSeries(chassisSeries)
                         .engineSeries(engineSeries)
-                        .sectorId(sector1.get().getId())
+                        .sectorId(getSectorUuid(sector1))
                         .build();
                 vehicleService.addVehicle(newVehicle);
-                break;
+                vehicleUuid = newVehicle.getId();
             }
-            case 2: {
+            case 2 -> {
                 Optional<Sector> sector2 = sectorService.getSectorByName("Mecanica");
                 Vehicle newVehicle = Vehicle.builder()
                         .id(UUID.randomUUID())
@@ -335,12 +368,12 @@ public class Menu {
                         .defect(defect)
                         .chassisSeries(chassisSeries)
                         .engineSeries(engineSeries)
-                        .sectorId(sector2.get().getId())
+                        .sectorId(getSectorUuid(sector2))
                         .build();
                 vehicleService.addVehicle(newVehicle);
-                break;
+                vehicleUuid = newVehicle.getId();
             }
-            case 3: {
+            case 3 -> {
                 Optional<Sector> sector3 = sectorService.getSectorByName("Vopsitorie");
                 Vehicle newVehicle = Vehicle.builder()
                         .id(UUID.randomUUID())
@@ -349,14 +382,15 @@ public class Menu {
                         .defect(defect)
                         .chassisSeries(chassisSeries)
                         .engineSeries(engineSeries)
-                        .sectorId(sector3.get().getId())
+                        .sectorId(getSectorUuid(sector3))
                         .build();
                 vehicleService.addVehicle(newVehicle);
-                break;
+                vehicleUuid = newVehicle.getId();
             }
-
         }
+
         System.out.println("Introduceti datele servisarii:");
+
 
         System.out.println("Nume:");
         String name = addVehicleScanner.next();
@@ -367,44 +401,132 @@ public class Menu {
         System.out.println("Pret manopera:");
         double price = addVehicleScanner.nextDouble();
 
-        System.out.println("Piese (separate prin virgula):");
-        String part = addVehicleScanner.next();
-
-        String[] requiredPartsList = part.split(",");
-        ArrayList<Part> allRequiredParts = new ArrayList<>();
-
-        for (String requiredPartName : requiredPartsList) {
-
-            if (partService.getPartByName(requiredPartName).isEmpty()) {
-                System.out.println("Piesa " + requiredPartName + " nu exista in stoc.");
-                System.out.println("Se cumpara piesa...");
-                Part newPart = Part.builder()
-                        .id(UUID.randomUUID())
-                        .creationDate(LocalDate.now())
-                        .updateDate(LocalDate.now())
-                        .code("1234d")
-                        .name(requiredPartName)
-                        .price(50.0)
-                        .build();
-
-                partService.addPart(newPart);
-                allRequiredParts.add(newPart);
-
-            } else allRequiredParts.add(partService.getPartByName(requiredPartName).orElse(null));
-        }
-
-        Work works = Work.builder()
+        Work work = Work.builder()
                 .id(UUID.randomUUID())
                 .creationDate(LocalDate.now())
                 .updateDate(LocalDate.now())
                 .name(name)
                 .duration(duration)
                 .price(price)
-                .partsList(allRequiredParts)
+                .vehicleId(vehicleUuid)
                 .build();
+        workService.addWork(work);
 
+        String intro = """
+                ***** Piese *****
+                1. Amortizor
+                2. Injector
+                3. Planetara
+                4. Pompa benzina
+                5. Curea distributie
+                6. Aripa stanga
+                7. Aripa dreapta
+                8. Incepe munca
+                """;
+
+        System.out.println("\n\t" + intro);
         System.out.println();
-        System.out.println("Masina a fost inregistrata cu succes!");
+
+
+        while (true) {
+
+            System.out.print("\nOptiunea: ");
+            Scanner scanner = new Scanner(System.in);
+            int optiune = scanner.nextInt();
+            System.out.println();
+
+            switch (optiune) {
+                case 1:
+                    workPartService.addNewWorkPart(WorkPart.builder()
+                            .id(UUID.randomUUID())
+                            .creationDate(LocalDate.now())
+                            .updateDate(LocalDate.now())
+                            .code("2e01")
+                            .name("Amortizor")
+                            .price(320.00)
+                            .workId(work.getId())
+                            .build());
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 2:
+                    workPartService.addNewWorkPart(WorkPart.builder()
+                            .id(UUID.randomUUID())
+                            .creationDate(LocalDate.now())
+                            .updateDate(LocalDate.now())
+                            .code("2e01")
+                            .name("Injector")
+                            .price(400.00)
+                            .workId(work.getId())
+                            .build());
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 3:
+                    workPartService.addNewWorkPart(WorkPart.builder()
+                            .id(UUID.randomUUID())
+                            .creationDate(LocalDate.now())
+                            .updateDate(LocalDate.now())
+                            .code("2e12")
+                            .name("Planetara")
+                            .price(300.00)
+                            .workId(work.getId())
+                            .build());
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 4:
+                    workPartService.addNewWorkPart(WorkPart.builder()
+                            .id(UUID.randomUUID())
+                            .creationDate(LocalDate.now())
+                            .updateDate(LocalDate.now())
+                            .code("2e02")
+                            .name("Pompa benzina")
+                            .price(800.00)
+                            .workId(work.getId())
+                            .build());
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 5:
+                    workPartService.addNewWorkPart(WorkPart.builder()
+                            .id(UUID.randomUUID())
+                            .creationDate(LocalDate.now())
+                            .updateDate(LocalDate.now())
+                            .code("2e01")
+                            .name("Curea distributie")
+                            .price(250.00)
+                            .workId(work.getId())
+                            .build());
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 6:
+                    workPartService.addNewWorkPart(WorkPart.builder()
+                            .id(UUID.randomUUID())
+                            .creationDate(LocalDate.now())
+                            .updateDate(LocalDate.now())
+                            .code("1e02")
+                            .name("Aripa stanga")
+                            .price(300.00)
+                            .workId(work.getId())
+                            .build());
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 7:
+                    workPartService.addNewWorkPart(WorkPart.builder()
+                            .id(UUID.randomUUID())
+                            .creationDate(LocalDate.now())
+                            .updateDate(LocalDate.now())
+                            .code("1e01")
+                            .name("Aripa dreapta")
+                            .price(300.00)
+                            .workId(work.getId())
+                            .build());
+                    System.out.println("\n\t" + intro);
+                    break;
+                case 8:
+                    executeWork();
+                    break;
+                default:
+                    return;
+            }
+        }
 
     }
 
